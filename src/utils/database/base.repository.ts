@@ -11,7 +11,8 @@ export class BaseRepository<T> {
   }
 
   async update(filter: FilterQuery<T>, data: UpdateQuery<T>): Promise<T | null> {
-    return this.model.findOneAndUpdate(filter, data, { new: true });
+    const updated = await this.model.findOneAndUpdate(filter, data, { new: true }).lean();
+    return updated as T
   }
 
   async findOne(filter: FilterQuery<T>): Promise<T | null> {

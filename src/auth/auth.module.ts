@@ -7,15 +7,21 @@ import { UsersRepository } from '@app/users/users.repository';
 import { User, UserSchema } from '@app/users/users.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SignInHandler } from './handlers/sing-in.handler';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from '@app/app/env.validations';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    // ENV
-    JwtModule.register({
-      global: true,
-      secret: "meia noite eu te conto",
-      signOptions: { expiresIn: '7d' },
+    JwtModule.registerAsync({
+      useFactory: async (
+        configService: ConfigService<EnvironmentVariables, true>,
+      ) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: "7d" },
+        global: true,
+      }),
+      inject: [ConfigService],
     }),
     UsersModule,
   ],
