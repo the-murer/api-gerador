@@ -3,12 +3,14 @@ import { AppController } from './app.controller';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from '../auth/auth.guard';
 import { EmailModule } from '../email/email.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate, type EnvironmentVariables } from './env.validations';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
+import { LoggingInterceptor } from './trace/loggin.interceptor';
+import { LoggerService } from './trace/logger.service';
 
 @Module({
   imports: [
@@ -31,7 +33,12 @@ import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
   ],
   controllers: [AppController],
   providers: [
+    LoggerService,
     { provide: APP_GUARD, useClass: AuthGuard },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
 export class AppModule { }

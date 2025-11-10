@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '@app/users/users.module';
 import { UsersRepository } from '@app/users/users.repository';
@@ -27,7 +26,6 @@ import { EnvironmentVariables } from '@app/app/env.validations';
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
     UsersRepository,
     SignInHandler
   ]
