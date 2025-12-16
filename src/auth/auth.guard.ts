@@ -1,4 +1,3 @@
-
 import { IS_PUBLIC_KEY } from '@app/utils/public.decorator';
 import {
   CanActivate,
@@ -17,7 +16,7 @@ export class AuthGuard extends NestAuthGuard('jwt') implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
-    private reflector: Reflector
+    private reflector: Reflector,
   ) {
     super();
   }
@@ -31,18 +30,19 @@ export class AuthGuard extends NestAuthGuard('jwt') implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        { secret: this.configService.get("JWT_SECRET") }
-      );
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get('JWT_SECRET'),
+      });
 
       request['user'] = payload;
-    } catch {
+    } catch (error) {
+      console.error('error', error);
       throw new UnauthorizedException();
     }
 

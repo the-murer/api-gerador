@@ -11,6 +11,7 @@ import { validate, type EnvironmentVariables } from './env.validations';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 import { LoggingInterceptor } from './trace/loggin.interceptor';
 import { LoggerService } from './trace/logger.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -24,6 +25,17 @@ import { LoggerService } from './trace/logger.service';
         configService: ConfigService<EnvironmentVariables, true>,
       ) => ({
         uri: configService.get('MONGO_DB_URI', { infer: true }),
+      }),
+      inject: [ConfigService],
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService<EnvironmentVariables, true>,
+      ) => ({
+        secret: configService.get('JWT_SECRET', { infer: true }),
+        signOptions: { expiresIn: '7d' },
+        global: true,
       }),
       inject: [ConfigService],
     }),

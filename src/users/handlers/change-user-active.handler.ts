@@ -1,24 +1,27 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler } from 'src/utils/command-handler';
 import { UsersRepository } from '../users.repository';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../users.schema';
 import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
 
-interface FindUserByIdHandlerInput extends UniqueIdDto {}
+interface ChangeUserActiveHandlerInput extends UniqueIdDto {
+  active: boolean
+}
 
-type FindUserByIdHandlerOutput = User;
+type ChangeUserActiveHandlerOutput = User;
 
 @Injectable()
-export class FindUserByIdHandler
-  implements CommandHandler<FindUserByIdHandlerInput, FindUserByIdHandlerOutput>
+export class ChangeUserActiveHandler
+  implements CommandHandler<ChangeUserActiveHandlerInput, ChangeUserActiveHandlerOutput>
 {
   constructor(
     @Inject(UsersRepository)
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  public async execute({ id }: FindUserByIdHandlerInput) {
-    const user = await this.usersRepository.findById(id);
+  public async execute({ id, ...input }: ChangeUserActiveHandlerInput) {
+    const user = await this.usersRepository.updateById(id, input);
 
     if (!user) {
       throw new NotFoundException('Usuario nao encontrado');

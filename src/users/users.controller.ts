@@ -1,36 +1,72 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { FindUserByIdHandler } from './handlers/find-user-by-id.handler';
 import { CreateUserHandler } from './handlers/create-user.handler';
 import { Public } from '@app/utils/public.decorator';
-import { FindUserByIdDto } from './dto/find-user-by-id.dto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { FindUsersHandler } from './handlers/find-users.handler';
+import { FindUsersDto } from './dto/find-users.dto';
+import { UpdateUserHandler } from './handlers/update-user.handler';
+import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
+import { ChangeUserActiveDto } from './dto/change-user-active.dto';
+import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
 
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly findUserByIdHandler: FindUserByIdHandler,
-    private readonly createUserHandler: CreateUserHandler
-  ) { }
-
+    private readonly findByIdHandler: FindUserByIdHandler,
+    private readonly findHandler: FindUsersHandler,
+    private readonly createHandler: CreateUserHandler,
+    private readonly updateHandler: UpdateUserHandler,
+    private readonly changeActiveHandler: ChangeUserActiveHandler,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
-  @Public()
-  async findUserById(@Param() { id }: FindUserByIdDto) {
-    const user = await this.findUserByIdHandler.execute({ id });
+  async findById(@Param() { id }: UniqueIdDto) {
+    const result = await this.findByIdHandler.execute({ id });
 
-    return user
+    return result;
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Patch(':id')
+  async update(@Param() { id }: UniqueIdDto, @Body() updateDto: CreateUserDto) {
+    const result = await this.updateHandler.execute({ id, ...updateDto });
+
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch('active')
+  async changeActive(@Body() changeActiveDto: ChangeUserActiveDto) {
+    const result = await this.changeActiveHandler.execute(changeActiveDto);
+
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get()
+  async find(@Param() findDto: FindUsersDto) {
+    const result = await this.findHandler.execute(findDto);
+
+    return result;
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  async createUser(@Param() createUserDto: CreateUserDto) {
-    const user = await this.createUserHandler.execute(createUserDto);
+  async create(@Body() createDto: CreateUserDto) {
+    const result = await this.createHandler.execute(createDto);
 
-    return user
+    return result;
   }
-
-
-
 }

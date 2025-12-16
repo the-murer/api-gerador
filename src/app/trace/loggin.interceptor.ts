@@ -23,40 +23,36 @@ export class LoggingInterceptor implements NestInterceptor {
     const span = trace.getActiveSpan();
     const traceId = span?.spanContext().traceId || 'no-trace';
 
-    this.logger.log('Requisição recebida', {
-      method,
-      url,
-      userAgent,
-      traceId,
-      body: JSON.stringify(body),
-    });
-
     return next.handle().pipe(
       tap({
-        next: (data) => {
+        next: (data: any) => {
           const res = context.switchToHttp().getResponse();
           const duration = Date.now() - start;
-          
-          this.logger.log('Requisição finalizada', {
+          span!.end();
+          this.logger.log(`SUCCESS ${method} ${url}`, {
             method,
             url,
             statusCode: res.statusCode,
             duration: `${duration}ms`,
             traceId,
+            result: JSON.stringify(data),
           });
         },
         error: (error) => {
           const duration = Date.now() - start;
-          
-          this.logger.error('Requisição com erro', error.stack, {
+          span!.end();
+
+          this.logger.error(`ERROR ${method} ${url}`, error.stack, {
             method,
             url,
+            body: JSON.stringify(body),
             duration: `${duration}ms`,
             error: error.message,
             traceId,
+            userAgent: JSON.stringify(userAgent),
           });
         },
-      })
+      }),
     );
   }
 }

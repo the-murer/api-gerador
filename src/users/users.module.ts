@@ -9,21 +9,28 @@ import { EmailService } from '@app/email/email.service';
 import { EmailModule } from '@app/email/email.module';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 import { ActionTokensService } from '@app/action-tokens/action-tokes.service';
+import { FindUsersHandler } from './handlers/find-users.handler';
+import { UpdateUserHandler } from './handlers/update-user.handler';
+import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
 
 @Module({
   imports: [
     EmailModule,
     ActionTokensModule,
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UsersController],
   providers: [
     UsersRepository,
     CreateUserHandler,
     FindUserByIdHandler,
+    FindUsersHandler,
+    UpdateUserHandler,
+    ChangeUserActiveHandler,
+    FindUsersHandler,
     EmailService,
     ActionTokensService,
   ],
-  exports: [UsersRepository]
+  exports: [UsersRepository],
 })
-export class UsersModule { }
+export class UsersModule {}

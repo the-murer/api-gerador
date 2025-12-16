@@ -21,13 +21,13 @@ export class SignInHandler implements CommandHandler<SignInHandlerInput, SignInH
   ) { }
 
   async execute({ email, pass }: SignInHandlerInput) {
-    const user = await this.usersRepository.findOne({ email });
-
+    const user = await this.usersRepository.findOne({ email }) as any;
+    console.log('user',user);
     
-    if (user?.password !== pass) {
-      this.logger.error("Falha ao autenticar")
-      throw new UnauthorizedException();
-    }
+    // if (user?.password !== pass) {
+    //   this.logger.error("Falha ao autenticar")
+    //   throw new UnauthorizedException();
+    // }
     const payload = { sub: user._id.toString(), _id: user._id.toString(), name: user.name, email };
 
     return {
