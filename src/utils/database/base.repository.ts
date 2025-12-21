@@ -1,6 +1,7 @@
 import {
   DefaultPaginationResponse,
   Metadata,
+  SortOrder,
 } from '@app/app/dtos/default-pagination.dto';
 import { Model, FilterQuery, UpdateQuery, Types } from 'mongoose';
 
@@ -56,16 +57,19 @@ export class BaseRepository<T> {
   async findPaginated(
     page: number,
     limit: number,
+    sort: keyof T,
+    sortOrder?: SortOrder,
     filter?: FilterQuery<T>,
-    sort?: SortQuery<T>,
   ): Promise<DefaultPaginationResponse<T>> {
     const skip = (page - 1) * limit;
+
+    const sortQuery = { [sort]: sortOrder === SortOrder.ASC ? 1 : -1 };
 
     const [total, data] = await Promise.all([
       this.model.countDocuments(filter || {}),
       this.model
         .find(filter || {})
-        .sort(sort || { createdAt: -1 })
+        .sort(sortQuery as SortQuery<T>)
         .skip(skip)
         .limit(limit),
     ]);

@@ -14,6 +14,10 @@ export class User extends TimestampSchema {
   @Prop({ required: true, unique: true })
   email: string;
 
+
+  @Prop({ required: true })
+  roles: string[];
+
   @Prop()
   password: string;
 }

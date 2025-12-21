@@ -1,17 +1,16 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { FindUserByIdHandler } from './handlers/find-user-by-id.handler';
 import { CreateUserHandler } from './handlers/create-user.handler';
-import { Public } from '@app/utils/public.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FindUsersHandler } from './handlers/find-users.handler';
 import { FindUsersDto } from './dto/find-users.dto';
@@ -39,14 +38,6 @@ export class UsersController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Patch(':id')
-  async update(@Param() { id }: UniqueIdDto, @Body() updateDto: CreateUserDto) {
-    const result = await this.updateHandler.execute({ id, ...updateDto });
-
-    return result;
-  }
-
-  @HttpCode(HttpStatus.OK)
   @Patch('active')
   async changeActive(@Body() changeActiveDto: ChangeUserActiveDto) {
     const result = await this.changeActiveHandler.execute(changeActiveDto);
@@ -55,8 +46,16 @@ export class UsersController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Patch(':id')
+  async update(@Param() { id }: UniqueIdDto, @Body() updateDto: CreateUserDto) {
+    const result = await this.updateHandler.execute({ id, ...updateDto });
+
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get()
-  async find(@Param() findDto: FindUsersDto) {
+  async find(@Query() findDto: FindUsersDto) {
     const result = await this.findHandler.execute(findDto);
 
     return result;

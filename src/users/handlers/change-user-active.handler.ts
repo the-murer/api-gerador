@@ -20,8 +20,8 @@ export class ChangeUserActiveHandler
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  public async execute({ id, ...input }: ChangeUserActiveHandlerInput) {
-    const user = await this.usersRepository.updateById(id, input);
+  public async execute({ id, active }: ChangeUserActiveHandlerInput) {
+    const user = await this.usersRepository.updateById(id, { active });
 
     if (!user) {
       throw new NotFoundException('Usuario nao encontrado');

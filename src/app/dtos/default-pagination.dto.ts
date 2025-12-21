@@ -1,11 +1,24 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class DefaultPaginationDto {
+export enum SortOrder {
+  ASC = 'asc',
+  DESC = 'desc',
+}
+
+export class DefaultPaginationDto<T> {
   @IsNumber()
   page: number;
 
   @IsNumber()
   limit: number;
+  
+  @IsOptional()
+  @IsString()
+  sort?: keyof T;
+
+  @IsOptional()
+  @IsString()
+  sortOrder?: SortOrder;
 }
 
 export type Metadata = {

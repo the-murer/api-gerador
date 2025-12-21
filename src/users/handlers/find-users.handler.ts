@@ -18,10 +18,17 @@ export class FindUsersHandler
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  public async execute({ page, limit }: FindUsersHandlerInput) {
+  public async execute({
+    page,
+    limit,
+    sort = 'createdAt',
+    sortOrder,
+  }: FindUsersHandlerInput) {
     const { items, metadata } = await this.usersRepository.findPaginated(
       page,
       limit,
+      sort,
+      sortOrder,
     );
 
     return {
