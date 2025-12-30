@@ -26,9 +26,11 @@ export class CreateUserHandler
   ) {}
 
   public async execute(input: CreateUserHandlerInput) {
+    
     const user = await this.usersRepository.create({
       name: input.name,
       email: input.email,
+      roles: input.roles,
     });
 
     const actionToken = await this.actionTokensService.createActionToken({
