@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BaseRepository } from '@app/utils/database/base.repository';
@@ -11,13 +15,20 @@ export class ActionTokensRepository extends BaseRepository<ActionToken> {
   }
 
   public async deleteActionTokenByHash(hash: string) {
-    const deleteToken = await this.model.deleteOne({ hash })
+    const deleteToken = await this.model.deleteOne({ hash });
 
     if (deleteToken.deletedCount < 1) {
-      throw new ForbiddenException("Falha ao deletar toke")
+      throw new ForbiddenException('Falha ao deletar toke');
     }
 
-    return true
+    return true;
   }
 
+  public async findActionTokenByHash(hash: string) {
+    const actionToken = await this.model.findOne({
+      hash,
+      expiresAt: { $gt: new Date() },
+    });
+    return actionToken;
+  }
 }

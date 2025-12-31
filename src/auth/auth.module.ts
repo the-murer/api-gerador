@@ -8,6 +8,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SignInHandler } from './handlers/sing-in.handler';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from '@app/app/env.validations';
+import { ForgotPasswordHandler } from './handlers/forgot-password.handler';
+import { RecoverPasswordHandler } from './handlers/recover-password.handler';
+import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
+import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 
 @Module({
   imports: [
@@ -17,17 +21,21 @@ import { EnvironmentVariables } from '@app/app/env.validations';
         configService: ConfigService<EnvironmentVariables, true>,
       ) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: "7d" },
+        signOptions: { expiresIn: '7d' },
         global: true,
       }),
       inject: [ConfigService],
     }),
     UsersModule,
+    ActionTokensModule,
   ],
   controllers: [AuthController],
   providers: [
+    ActionTokensService,
     UsersRepository,
-    SignInHandler
-  ]
+    SignInHandler,
+    ForgotPasswordHandler,
+    RecoverPasswordHandler,
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}

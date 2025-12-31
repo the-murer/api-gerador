@@ -5,7 +5,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../users.schema';
 import { EmailService } from '@app/email/email.service';
 import { ActionTokensRepository } from '@app/action-tokens/action-tokens.repository';
-import { ActionTokensService } from '@app/action-tokens/action-tokes.service';
+import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { ActionTokenType } from '@app/action-tokens/action-tokens.schema';
 
 interface CreateUserHandlerInput extends CreateUserDto {}
@@ -26,7 +26,6 @@ export class CreateUserHandler
   ) {}
 
   public async execute(input: CreateUserHandlerInput) {
-    
     const user = await this.usersRepository.create({
       name: input.name,
       email: input.email,

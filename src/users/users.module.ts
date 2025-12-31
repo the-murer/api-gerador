@@ -8,7 +8,7 @@ import { FindUserByIdHandler } from './handlers/find-user-by-id.handler';
 import { EmailService } from '@app/email/email.service';
 import { EmailModule } from '@app/email/email.module';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
-import { ActionTokensService } from '@app/action-tokens/action-tokes.service';
+import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { FindUsersHandler } from './handlers/find-users.handler';
 import { UpdateUserHandler } from './handlers/update-user.handler';
 import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
