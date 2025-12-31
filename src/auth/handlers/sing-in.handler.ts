@@ -24,7 +24,6 @@ export class SignInHandler
 
   async execute({ email, pass }: SignInHandlerInput) {
     const user = (await this.usersRepository.findOne({ email })) as any;
-    console.log('user', user);
     // const isValid = await bcrypt.compare(password, hash);
 
     // if (user?.password !== pass) {

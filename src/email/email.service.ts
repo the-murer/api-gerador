@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
   private transporter;
+  private readonly logger = new Logger(EmailService.name);
 
   constructor() {
     // ETHEREAL EMAIL
@@ -12,8 +13,8 @@ export class EmailService {
       port: 587,
       auth: {
         user: 'elena.bernier65@ethereal.email',
-        pass: 'vXj9JmvWAGHaH4X5ja'
-      }
+        pass: 'vXj9JmvWAGHaH4X5ja',
+      },
     });
   }
 
@@ -26,7 +27,7 @@ export class EmailService {
       html,
     });
 
-    console.log('Message sent: %s', info.messageId);
+    this.logger.log(`Message sent: ${info.messageId}`);
     return info;
   }
 }
