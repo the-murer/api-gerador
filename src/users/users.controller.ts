@@ -18,6 +18,7 @@ import { UpdateUserHandler } from './handlers/update-user.handler';
 import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
 import { ChangeUserActiveDto } from './dto/change-user-active.dto';
 import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
+import { Roles } from '@app/auth/roles/decorator';
 
 @Controller('users')
 export class UsersController {
@@ -31,6 +32,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
+  @Roles({ action: 'read', subject: 'User' })
   async findById(@Param() { id }: UniqueIdDto) {
     const result = await this.findByIdHandler.execute({ id });
 
@@ -39,6 +41,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Patch('active')
+  @Roles({ action: 'update', subject: 'User' })
   async changeActive(@Body() changeActiveDto: ChangeUserActiveDto) {
     const result = await this.changeActiveHandler.execute(changeActiveDto);
 
@@ -47,6 +50,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Patch(':id')
+  @Roles({ action: 'update', subject: 'User' })
   async update(@Param() { id }: UniqueIdDto, @Body() updateDto: CreateUserDto) {
     const result = await this.updateHandler.execute({ id, ...updateDto });
 
@@ -55,6 +59,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
+  @Roles({ action: 'read', subject: 'User' })
   async find(@Query() findDto: FindUsersDto) {
     const result = await this.findHandler.execute(findDto);
 
@@ -63,6 +68,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
+  @Roles({ action: 'create', subject: 'User' })
   async create(@Body() createDto: CreateUserDto) {
     const result = await this.createHandler.execute(createDto);
 

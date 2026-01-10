@@ -2,6 +2,7 @@ import { IS_PUBLIC_KEY } from '@app/utils/public.decorator';
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { AuthGuard as NestAuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
+import { RolesGuard } from '@app/auth/roles/roles.guard';
 
 @Injectable()
 export class AuthGuard extends NestAuthGuard('jwt') implements CanActivate {
@@ -17,6 +19,7 @@ export class AuthGuard extends NestAuthGuard('jwt') implements CanActivate {
     private jwtService: JwtService,
     private configService: ConfigService,
     private reflector: Reflector,
+    private rolesGuard: RolesGuard,
   ) {
     super();
   }
@@ -36,11 +39,16 @@ export class AuthGuard extends NestAuthGuard('jwt') implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const user = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get('JWT_SECRET'),
       });
 
-      request['user'] = payload;
+      request['user'] = user;
+
+      const hasRoles = await this.rolesGuard.canActivate(context);
+      if (!hasRoles) {
+        return false
+      }
     } catch (error) {
       console.error('error', error);
       throw new UnauthorizedException();

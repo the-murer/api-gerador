@@ -1,7 +1,11 @@
-
 import { TimestampSchema } from '@app/utils/database/schema-utils';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+
+export enum UserRoles {
+  ADMIN = 'admin',
+  USER = 'user',
+}
 
 @Schema({ timestamps: true })
 export class User extends TimestampSchema {
@@ -14,9 +18,8 @@ export class User extends TimestampSchema {
   @Prop({ required: true, unique: true })
   email: string;
 
-
-  @Prop({ required: true })
-  roles: string[];
+  @Prop({ required: true, enum: UserRoles, type: [String] })
+  roles: UserRoles[];
 
   @Prop()
   password: string;

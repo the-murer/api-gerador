@@ -1,0 +1,32 @@
+import { User, UserRoles } from '@app/users/users.schema';
+import {
+  Ability,
+  AbilityBuilder,
+  ExtractSubjectType,
+  PureAbility,
+} from '@casl/ability';
+
+export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
+export type Subjects = 'User' | 'all';
+
+export type AppAbility = PureAbility<any>;
+
+export function defineAbility(user: User): AppAbility {
+  const { can, cannot, build } = new AbilityBuilder<AppAbility>(Ability);
+
+  const includeRole = (role: UserRoles) => {
+    return user.roles.some((r) => r === role);
+  };
+
+  if (includeRole(UserRoles.ADMIN)) {
+    can('manage', 'all');
+  }
+  if (includeRole(UserRoles.USER)) {
+    can('read', 'all');
+  }
+
+  return build({
+    detectSubjectType: (item) =>
+      item.constructor as ExtractSubjectType<Subjects>,
+  });
+}

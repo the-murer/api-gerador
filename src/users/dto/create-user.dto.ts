@@ -1,4 +1,5 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsString } from 'class-validator';
+import { UserRoles } from '../users.schema';
 
 export class CreateUserDto {
   @IsString()
@@ -8,6 +9,6 @@ export class CreateUserDto {
   email: string;
 
   @IsArray()
-  @IsString({ each: true })
-  roles: string[];
+  @IsEnum(UserRoles, { each: true })
+  roles: UserRoles[];
 }

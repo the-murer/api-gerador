@@ -24,17 +24,19 @@ export class SignInHandler
 
   async execute({ email, pass }: SignInHandlerInput) {
     const user = (await this.usersRepository.findOne({ email })) as any;
-    // const isValid = await bcrypt.compare(password, hash);
+    const isValid = await bcrypt.compare(pass, user.password);
 
-    // if (user?.password !== pass) {
-    //   this.logger.error("Falha ao autenticar")
-    //   throw new UnauthorizedException();
-    // }
+    if (!isValid) {
+      this.logger.error('Falha ao autenticar');
+      throw new UnauthorizedException();
+    }
+
     const payload = {
       sub: user._id.toString(),
       _id: user._id.toString(),
       name: user.name,
       email,
+      roles: user.roles,
     };
 
     return {

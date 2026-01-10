@@ -12,6 +12,8 @@ import { ForgotPasswordHandler } from './handlers/forgot-password.handler';
 import { RecoverPasswordHandler } from './handlers/recover-password.handler';
 import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './roles/roles.guard';
 
 @Module({
   imports: [
@@ -31,11 +33,14 @@ import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
   ],
   controllers: [AuthController],
   providers: [
+    RolesGuard,
+    { provide: APP_GUARD, useClass: RolesGuard },
     ActionTokensService,
     UsersRepository,
     SignInHandler,
     ForgotPasswordHandler,
     RecoverPasswordHandler,
   ],
+  exports: [RolesGuard],
 })
 export class AuthModule {}
