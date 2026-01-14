@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# AQUI COMECA OS QUE EU COLOQUEI NA MAO
+cache.json 
+
 # Logs
 logs
 *.log
