@@ -19,6 +19,8 @@ import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
 import { ChangeUserActiveDto } from './dto/change-user-active.dto';
 import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
 import { Roles } from '@app/auth/roles/decorator';
+import { UpdateProfilePictureHandler } from './handlers/update-profile-picture.handler';
+import { UpdateProfilePictureDto } from './dto/update-profile-picture.dto';
 
 @Controller('users')
 export class UsersController {
@@ -28,6 +30,7 @@ export class UsersController {
     private readonly createHandler: CreateUserHandler,
     private readonly updateHandler: UpdateUserHandler,
     private readonly changeActiveHandler: ChangeUserActiveHandler,
+    private readonly updateProfilePictureHandler: UpdateProfilePictureHandler,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -44,6 +47,19 @@ export class UsersController {
   @Roles({ action: 'update', subject: 'User' })
   async changeActive(@Body() changeActiveDto: ChangeUserActiveDto) {
     const result = await this.changeActiveHandler.execute(changeActiveDto);
+
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Patch('profile-picture')
+  @Roles({ action: 'update', subject: 'User' })
+  async updateProfilePicture(
+    @Body() updateProfilePictureDto: UpdateProfilePictureDto,
+  ) {
+    const result = await this.updateProfilePictureHandler.execute(
+      updateProfilePictureDto,
+    );
 
     return result;
   }

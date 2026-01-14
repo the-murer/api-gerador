@@ -28,7 +28,7 @@ export class LoggingInterceptor implements NestInterceptor {
         next: (data: any) => {
           const res = context.switchToHttp().getResponse();
           const duration = Date.now() - start;
-          span!.end();
+          span?.end();
           this.logger.log(`SUCCESS ${method} ${url}`, {
             method,
             url,
@@ -40,7 +40,7 @@ export class LoggingInterceptor implements NestInterceptor {
         },
         error: (error) => {
           const duration = Date.now() - start;
-          span!.end();
+          span?.end();
 
           this.logger.error(`ERROR ${method} ${url}`, error.stack, {
             method,

@@ -1,9 +1,9 @@
 import {
   DefaultPaginationResponse,
-  Metadata,
   SortOrder,
 } from '@app/app/dtos/default-pagination.dto';
-import { Model, FilterQuery, UpdateQuery, Types } from 'mongoose';
+import { Model, FilterQuery, UpdateQuery } from 'mongoose';
+import { generateId } from './schema-utils';
 
 type SortQuery<T> = Record<keyof T | string, 1 | -1>;
 
@@ -27,14 +27,14 @@ export class BaseRepository<T> {
 
   async updateById(id: string, data: UpdateQuery<T>): Promise<T | null> {
     const updated = await this.model
-      .findOneAndUpdate({ _id: new Types.ObjectId(id) }, data, { new: true })
+      .findOneAndUpdate({ _id: generateId(id) }, data, { new: true })
       .lean();
     return updated as T;
   }
 
   async delete(id: string): Promise<T | null> {
     const deleted = await this.model
-      .findOneAndDelete({ _id: new Types.ObjectId(id) })
+      .findOneAndDelete({ _id: generateId(id) })
       .lean();
 
     return deleted as T;

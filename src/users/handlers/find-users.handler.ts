@@ -4,6 +4,7 @@ import { UsersRepository } from '../users.repository';
 import { User } from '../users.schema';
 import { FindUsersDto } from '../dto/find-users.dto';
 import { DefaultPaginationResponse } from '@app/app/dtos/default-pagination.dto';
+import { StorageService } from '@app/files/storage.service';
 
 interface FindUsersHandlerInput extends FindUsersDto {}
 
@@ -16,6 +17,8 @@ export class FindUsersHandler
   constructor(
     @Inject(UsersRepository)
     private readonly usersRepository: UsersRepository,
+    @Inject(StorageService)
+    private readonly storageService: StorageService,
   ) {}
 
   public async execute({
@@ -30,6 +33,13 @@ export class FindUsersHandler
       sort,
       sortOrder,
     );
+
+    for (const user of items) {
+      if (user?.profilePictureUrl) {
+        const tempProfileUrl = await this.storageService.getFileUrl(user?.profilePictureUrl);
+        user.profilePictureUrl = tempProfileUrl;
+      }
+    }
 
     return {
       metadata,

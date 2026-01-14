@@ -12,12 +12,15 @@ import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { FindUsersHandler } from './handlers/find-users.handler';
 import { UpdateUserHandler } from './handlers/update-user.handler';
 import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
+import { UpdateProfilePictureHandler } from './handlers/update-profile-picture.handler';
+import { FilesModule } from '@app/files/files.module';
 
 @Module({
   imports: [
     EmailModule,
     ActionTokensModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    FilesModule,
   ],
   controllers: [UsersController],
   providers: [
@@ -28,6 +31,7 @@ import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
     UpdateUserHandler,
     ChangeUserActiveHandler,
     FindUsersHandler,
+    UpdateProfilePictureHandler,
     EmailService,
     ActionTokensService,
   ],

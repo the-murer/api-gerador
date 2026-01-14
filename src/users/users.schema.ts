@@ -18,6 +18,9 @@ export class User extends TimestampSchema {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({ required: false })
+  profilePictureUrl?: string;
+
   @Prop({ required: true, enum: UserRoles, type: [String] })
   roles: UserRoles[];
 

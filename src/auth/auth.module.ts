@@ -14,6 +14,7 @@ import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles/roles.guard';
+import { FilesModule } from '@app/files/files.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RolesGuard } from './roles/roles.guard';
     }),
     UsersModule,
     ActionTokensModule,
+    FilesModule,
   ],
   controllers: [AuthController],
   providers: [
