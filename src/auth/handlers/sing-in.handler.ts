@@ -42,7 +42,7 @@ export class SignInHandler
     if (user.profilePictureUrl) {
       user.profilePictureUrl = await this.storageService.getFileUrl(
         user.profilePictureUrl,
-        1000 * 60 * 60 * 24 * 7,
+        1000 * 60 * 60 * 24 * 6.9,
       );
     }
 

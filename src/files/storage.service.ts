@@ -15,7 +15,7 @@ export const cache = new Keyv({
   store: new KeyvFile({
     filename: './cache.json',
   }),
-  ttl: 1000 * 60 * 15,
+  ttl: 1000 * 60,
 });
 @Injectable()
 export class StorageService {
@@ -59,7 +59,7 @@ export class StorageService {
     return key;
   }
 
-  public async getFileUrl(key: string, expiresIn: number = 1000 * 60 * 15) {
+  public async getFileUrl(key: string, expiresIn: number = 1000 * 60) {
     const cached = await cache.get(key);
     if (cached) return cached;
 
