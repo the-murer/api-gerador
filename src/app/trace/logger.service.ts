@@ -1,7 +1,6 @@
-// logger.service.ts
 import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
 import { logs } from '@opentelemetry/api-logs';
-import { trace, context, SpanStatusCode } from '@opentelemetry/api';
+import { trace } from '@opentelemetry/api';
 
 @Injectable()
 export class LoggerService implements NestLoggerService {
@@ -26,7 +25,7 @@ export class LoggerService implements NestLoggerService {
     }
 
     this.logger.emit(record);
-    
+
     // Console para desenvolvimento
     console.log(`[${level}] ${message}`, meta ? JSON.stringify(meta) : '');
   }

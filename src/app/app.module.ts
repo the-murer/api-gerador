@@ -12,7 +12,8 @@ import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 import { LoggingInterceptor } from './trace/loggin.interceptor';
 import { LoggerService } from './trace/logger.service';
 import { JwtModule } from '@nestjs/jwt';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from '@app/tasks/tasks.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,7 +40,10 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
+    TasksModule,
+    ActionTokensModule,
     AuthModule,
     EmailModule,
   ],
@@ -53,4 +57,4 @@ import { JwtModule } from '@nestjs/jwt';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -30,4 +30,18 @@ export class FilesRepository extends BaseRepository<Files> {
 
     return null;
   }
+
+  async findDeletedFiles(): Promise<Files[]> {
+    const filesToDelete = await this.model.find({
+      status: { $ne: FileStatus.COMPLETED },
+      updatedAt: { $lt: new Date(Date.now() - 1000 * 60 * 60 * 1) },
+    });
+
+    return filesToDelete;
+  }
+  async deleteDeletedFiles(files: Types.ObjectId[]): Promise<void> {
+    await this.model.deleteMany({
+      _id: { $in: files },
+    });
+  }
 }
