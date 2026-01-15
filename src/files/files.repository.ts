@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Files, FileStatus } from './files.schema';
 import { Model, Types } from 'mongoose';
 import { BaseRepository } from '@app/utils/database/base.repository';
-import { generateId } from '@app/utils/database/schema-utils';
 
 @Injectable()
 export class FilesRepository extends BaseRepository<Files> {
@@ -11,9 +10,9 @@ export class FilesRepository extends BaseRepository<Files> {
     super(model);
   }
 
-  async confirmFileUpload(fileId: string): Promise<Files> {
+  async confirmFileUpload(key: string): Promise<Files> {
     const file = await this.model.findOneAndUpdate(
-      { _id: generateId(fileId) },
+      { key },
       { $set: { status: FileStatus.COMPLETED } },
       { new: true },
     );
@@ -25,8 +24,8 @@ export class FilesRepository extends BaseRepository<Files> {
     return file;
   }
 
-  async deleteFile(url: string): Promise<null> {
-    await this.model.updateOne({ key: url }, { status: FileStatus.DELETED });
+  async deleteFile(key: string): Promise<null> {
+    await this.model.updateOne({ key }, { status: FileStatus.DELETED });
 
     return null;
   }

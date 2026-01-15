@@ -34,19 +34,29 @@ export class LoggerService implements NestLoggerService {
     this.emitLog('INFO', message, meta);
   }
 
-  error(message: string, trace?: string, meta?: any) {
-    this.emitLog('ERROR', message, { trace, ...meta });
+  error(message: string, trace?: string, rawMeta?: any) {
+    const meta = { ...processMeta(rawMeta), trace };
+    this.emitLog('ERROR', message, meta);
   }
 
   warn(message: string, meta?: any) {
-    this.emitLog('WARN', message, meta);
+    this.emitLog('WARN', message, processMeta(meta));
   }
 
   debug(message: string, meta?: any) {
-    this.emitLog('DEBUG', message, meta);
+    this.emitLog('DEBUG', message, processMeta(meta));
   }
 
   verbose(message: string, meta?: any) {
-    this.emitLog('VERBOSE', message, meta);
+    this.emitLog('VERBOSE', message, processMeta(meta));
   }
 }
+
+const processMeta = (meta?: any) => {
+  if (typeof meta === 'string') {
+    return { meta };
+  }
+  return {
+    ...meta,
+  };
+};

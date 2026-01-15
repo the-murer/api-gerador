@@ -30,19 +30,18 @@ export class SignInHandler
   ) {}
 
   async execute({ email, pass }: SignInHandlerInput) {
-    const user = (await this.usersRepository.findOne({ email })) as any;
-    // const isValid = await bcrypt.compare(pass, user.password);
-    // console.log("🚀 ~ SignInHandler ~ execute ~ isValid:", isValid)
+    const user = (await this.usersRepository.findOne({ email }));
+    const isValid = await bcrypt.compare(pass, (user?.password || ""));
 
-    // if (!isValid) {
-    //   this.logger.error('Falha ao autenticar');
-    //   throw new UnauthorizedException();
-    // }
+    if (!isValid || !user) {
+      this.logger.error('Falha ao autenticar');
+      throw new UnauthorizedException();
+    }
 
     if (user.profilePictureUrl) {
       user.profilePictureUrl = await this.storageService.getFileUrl(
         user.profilePictureUrl,
-        1000 * 60 * 60 * 24 * 6.9,
+        60 * 60 * 24 * 6,
       );
     }
 

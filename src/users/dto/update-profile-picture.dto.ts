@@ -5,5 +5,5 @@ export class UpdateProfilePictureDto {
   id: string;
 
   @IsString()
-  fileId: string;
+  fileKey: string;
 }

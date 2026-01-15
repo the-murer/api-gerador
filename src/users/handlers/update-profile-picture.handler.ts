@@ -3,7 +3,6 @@ import { CommandHandler } from 'src/utils/command-handler';
 import { UsersRepository } from '../users.repository';
 import { User } from '../users.schema';
 import { FilesRepository } from '@app/files/files.repository';
-import { generateId } from '@app/utils/database/schema-utils';
 import { UpdateProfilePictureDto } from '../dto/update-profile-picture.dto';
 
 interface UpdateProfilePictureHandlerInput extends UpdateProfilePictureDto {}
@@ -25,7 +24,7 @@ export class UpdateProfilePictureHandler
     private readonly filesRepository: FilesRepository,
   ) {}
 
-  public async execute({ id, fileId }: UpdateProfilePictureHandlerInput) {
+  public async execute({ id, fileKey }: UpdateProfilePictureHandlerInput) {
     const user = await this.usersRepository.findById(id);
 
     if (!user) throw new NotFoundException('Usuario nao encontrado');
@@ -34,10 +33,10 @@ export class UpdateProfilePictureHandler
       await this.filesRepository.deleteFile(user.profilePictureUrl);
     }
 
-    await this.filesRepository.confirmFileUpload(fileId);
+    await this.filesRepository.confirmFileUpload(fileKey);
 
     await this.usersRepository.updateById(id, {
-      profilePictureId: generateId(fileId),
+      profilePictureUrl: fileKey,
     });
 
     return user;

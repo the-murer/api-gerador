@@ -11,11 +11,13 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import Keyv from 'keyv';
 import KeyvFile from 'keyv-file';
 
+const CACHE_TTL = 60 * 10; //10 MINUTES
+
 export const cache = new Keyv({
   store: new KeyvFile({
     filename: './cache.json',
   }),
-  ttl: 1000 * 60,
+  ttl: CACHE_TTL * 1000,
 });
 @Injectable()
 export class StorageService {
@@ -59,7 +61,7 @@ export class StorageService {
     return key;
   }
 
-  public async getFileUrl(key: string, expiresIn: number = 1000 * 60) {
+  public async getFileUrl(key: string, expiresIn: number = CACHE_TTL) {
     const cached = await cache.get(key);
     if (cached) return cached;
 
@@ -73,7 +75,7 @@ export class StorageService {
       { expiresIn },
     );
     await cache.set(key, url);
-
+    
     return url;
   }
 
