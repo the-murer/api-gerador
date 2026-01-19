@@ -11,14 +11,14 @@ export enum MessageRole {
 @Schema({ timestamps: true })
 export class Message extends TimestampSchema {
   @Prop({ required: true })
-  role: MessageRole;  
-  
+  role: MessageRole;
+
   @Prop({ required: true })
-  content: string;  
-  
-  @Prop({ required: false })
-  versions: string[];    
-  
+  content: string;
+
+  @Prop({ required: false, type: [String], default: [] })
+  versions?: string[];
+
   @Prop({ required: true, type: Types.ObjectId, ref: 'Chat' })
   chatId: Types.ObjectId;
 }

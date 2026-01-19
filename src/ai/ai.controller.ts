@@ -1,5 +1,5 @@
-import { Roles } from '@app/auth/roles/decorator';
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -7,44 +7,90 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FindChatsByUserHandler } from './handlers/find-chat-by-user';
 import { FindChatsByUserDto } from './dto/find-chats-by-user.dto';
 import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
 import { FindChatByIdHandler } from './handlers/find-chat-by-id';
+import { GenerateAiResponseHandler } from './handlers/generate-ai-response';
+import { SendMessageDto } from './dto/send-message.dto';
+import { AuthUser } from '@app/utils/user-decorator';
+import { User } from '@app/users/users.schema';
+import { AddDocumentDto } from './dto/add-document.dto';
+import { AddDocumentHandler } from './handlers/add-document-handler';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { TranscribeAudioHandler } from './handlers/transcribe-audio.handler';
 
 @Controller('ai')
 export class AiController {
   constructor(
     private readonly findChatsByUserHandler: FindChatsByUserHandler,
     private readonly findChatByIdHandler: FindChatByIdHandler,
-  ) { }
+    private readonly generateAiResponseHandler: GenerateAiResponseHandler,
+    private readonly addDocumentHandler: AddDocumentHandler,
+    private readonly transcribeAudioHandler: TranscribeAudioHandler,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Get('chats')
-  @Roles({ action: 'read', subject: 'User' })
-  async findChatsByUser(@Query() findDto: FindChatsByUserDto) {
-    const result = await this.findChatsByUserHandler.execute(findDto);
+  async findChatsByUser(
+    @Query() findDto: FindChatsByUserDto,
+    @AuthUser() user: User,
+  ) {
+    const result = await this.findChatsByUserHandler.execute({
+      ...findDto,
+      userId: user._id.toString(),
+    });
 
     return result;
   }
 
-
   @HttpCode(HttpStatus.OK)
   @Get('chats/:id')
-  @Roles({ action: 'read', subject: 'User' })
   async findChatById(@Param() { id }: UniqueIdDto) {
     const result = await this.findChatByIdHandler.execute({ id });
 
     return result;
   }
 
-  // @HttpCode(HttpStatus.OK)
-  // @Post('chats/:id/messages')
-  // @Roles({ action: 'create', subject: 'User' })
-  // async createMessage(@Param() { id }: UniqueIdDto, @Body() createMessageDto: CreateMessageDto) {
-  //   const result = await this.createMessageHandler.execute({ id, ...createMessageDto });
+  @HttpCode(HttpStatus.OK)
+  @Post('message')
+  async sendMessage(
+    @Body() sendMessageDto: SendMessageDto,
+    @AuthUser() user: User,
+  ) {
+    const result = await this.generateAiResponseHandler.execute({
+      ...sendMessageDto,
+      user,
+    });
 
-  //   return result;
-  // }
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('document')
+  async addDocument(
+    @Body() addDocumentDto: AddDocumentDto,
+    @AuthUser() user: User,
+  ) {
+    const result = await this.addDocumentHandler.execute({
+      ...addDocumentDto,
+      ownerId: user._id.toString(),
+    });
+
+    return result;
+  }
+
+  @Post('transcribe')
+  @UseInterceptors(FileInterceptor('file'))
+  async transcribeAudio(@UploadedFile() file: any) {
+    const buffer = file?.buffer;
+    const response = await this.transcribeAudioHandler.execute({
+      audio: buffer,
+    });
+
+    return { message: response };
+  }
 }

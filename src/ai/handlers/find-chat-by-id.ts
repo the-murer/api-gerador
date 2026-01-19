@@ -1,10 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler } from 'src/utils/command-handler';
-import { ChatsRepository } from '../chats/chat.repository';
-import { Chat } from '../chats/chat.schema';
+import { ChatsRepository } from '../repositories/chat.repository';
+import { Chat } from '../schemas/chat.schema';
 import { UniqueIdDto } from '@app/app/dtos/unique-id.dto';
-import { Message } from '../messages/message.schema';
-import { MessagesRepository } from '../messages/message.repository';
+import { Message } from '../schemas/message.schema';
+import { MessagesRepository } from '../repositories/message.repository';
 
 interface FindChatByIdHandlerInput extends UniqueIdDto { }
 

@@ -4,7 +4,6 @@ import { UsersRepository } from '../users.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../users.schema';
 import { EmailService } from '@app/email/email.service';
-import { ActionTokensRepository } from '@app/action-tokens/action-tokens.repository';
 import { ActionTokensService } from '@app/action-tokens/action-tokens.service';
 import { ActionTokenType } from '@app/action-tokens/action-tokens.schema';
 
