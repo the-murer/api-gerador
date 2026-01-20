@@ -1,10 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DocumentsRepository } from '@app/ai/repositories/document.repository';
 import { ConfigService } from '@nestjs/config';
 import { QdrantClient } from '@qdrant/js-client-rest';
+import { Document } from '@app/ai/schemas/document.schema';
 
 @Injectable()
 export class DeleteDocumentService {
@@ -13,8 +11,12 @@ export class DeleteDocumentService {
 
   constructor(
     private readonly documentRepository: DocumentsRepository,
-    private readonly configService: ConfigService) {
-    this.indexName = this.configService.get('QDRANT_COLLECTION_NAME') || this.configService.get('QDRANT_INDEX_NAME') || 'documents';
+    private readonly configService: ConfigService,
+  ) {
+    this.indexName =
+      this.configService.get('QDRANT_COLLECTION_NAME') ||
+      this.configService.get('QDRANT_INDEX_NAME') ||
+      'documents';
 
     this.qdrantClient = new QdrantClient({
       url: this.configService.get('QDRANT_ENDPOINT'),
@@ -22,7 +24,7 @@ export class DeleteDocumentService {
     });
   }
 
-  async execute(documentId: string): Promise<void> {
+  async execute(documentId: string): Promise<Document> {
     try {
       const result = await this.documentRepository.delete(documentId);
 
@@ -41,6 +43,8 @@ export class DeleteDocumentService {
           ],
         },
       });
+
+      return result;
     } catch (error) {
       console.error('Erro ao deletar documento:', error);
       throw error;
