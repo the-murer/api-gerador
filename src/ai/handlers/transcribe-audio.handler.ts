@@ -6,21 +6,21 @@ interface TranscribeAudioHandlerInput {
   audio: Buffer;
 }
 
-type TranscribeAudioHandlerOutput = { message: string };
+type TranscribeAudioHandlerOutput = string;
 
 @Injectable()
 export class TranscribeAudioHandler
-  implements CommandHandler<TranscribeAudioHandlerInput, TranscribeAudioHandlerOutput> {
+  implements
+    CommandHandler<TranscribeAudioHandlerInput, TranscribeAudioHandlerOutput>
+{
   constructor(
     @Inject(AiService)
     private readonly aiService: AiService,
-  ) { }
+  ) {}
 
-  public async execute({
-    audio,
-  }: TranscribeAudioHandlerInput) {
+  public async execute({ audio }: TranscribeAudioHandlerInput) {
     const message = await this.aiService.transcribeAudio(audio);
 
-    return { message };
+    return message;
   }
 }

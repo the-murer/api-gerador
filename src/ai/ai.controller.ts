@@ -84,13 +84,18 @@ export class AiController {
   }
 
   @Post('transcribe')
-  @UseInterceptors(FileInterceptor('file'))
-  async transcribeAudio(@UploadedFile() file: any) {
-    const buffer = file?.buffer;
-    const response = await this.transcribeAudioHandler.execute({
-      audio: buffer,
+  @UseInterceptors(FileInterceptor('audio'))
+  async transcribeAudio(@UploadedFile() audioFIle: any) {
+    if (!audioFIle) {
+      throw new Error('Nenhum arquivo de áudio foi enviado');
+    }
+
+    const audio = audioFIle.buffer;
+
+    const message = await this.transcribeAudioHandler.execute({
+      audio,
     });
 
-    return { message: response };
+    return { message };
   }
 }

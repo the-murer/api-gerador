@@ -44,10 +44,6 @@ export class AiService {
   }
 
   public async generateConversationTitle(content: string): Promise<string> {
-    console.log(
-      '🚀 ~ AiService ~ generateConversationTitle ~ content:',
-      content,
-    );
     const result = await generateText({
       model: openai('gpt-4o-mini'),
       system: TITLE_PROMPT,
@@ -66,78 +62,3 @@ export class AiService {
     return result.text;
   }
 }
-
-// private async buildMessageStream(
-//   messages: Message[],
-//   message: string,
-//   authenticatedUser: AuthenticatedUserDto,
-// ) {
-//   const { formattedMessages, lastToolInfo } = this.formatMessageHistory(
-//     messages,
-//     message,
-//   );
-
-//   const systemPrompt = await this.buildSystemPrompt(lastToolInfo);
-
-//   return {
-//     model: openai('gpt-4o'),
-//     system: systemPrompt,
-//     messages: formattedMessages,
-//     tools: await this.getTools(authenticatedUser),
-//     temperature: 0.05,
-//     maxRetries: 3,
-//     stopWhen: stepCountIs(5),
-//     onFinish: async ({ response, toolCalls }) => {
-//       const lastTool = toolCalls?.[toolCalls.length - 1];
-
-//       if (lastTool?.result?.metadata) {
-//         const { page, pageCount, total } = lastTool.result.metadata;
-//         response.text = `Página ${page} de ${pageCount} • ${total} resultados`;
-//       }
-//     },
-//   };
-// }
-
-// async streamChatResponse(
-//   message: string,
-//   res: Response,
-//   authenticatedUser: AuthenticatedUserDto,
-//   conversationId?: string,
-// ) {
-//   const { conversation, messages } = await this.getConversationAndMessages(
-//     message,
-//     authenticatedUser,
-//     conversationId,
-//   );
-
-//   await this.aiRepository.saveMessage(message, 'user', conversation._id);
-
-//   const result = streamText(
-//     await this.buildMessageStream(messages, message, authenticatedUser),
-//   );
-
-//   const assistantTextPromise = result.text.catch((error) => {
-//     console.error('Erro ao obter texto gerado no streaming:', error);
-//     return '';
-//   });
-
-//   result.pipeUIMessageStreamToResponse(res, {
-//     messageMetadata: () => ({
-//       conversationId: conversation._id,
-//       conversationTitle: conversation.title,
-//     }),
-//   });
-
-//   const assistantText = (await assistantTextPromise).trim();
-
-//   const parts = this.mapAISDKMessagesToParts(
-//     (await result.response).messages,
-//   );
-
-//   await this.aiRepository.saveMessage(
-//     assistantText,
-//     'assistant',
-//     conversation._id,
-//     parts,
-//   );
-// }
