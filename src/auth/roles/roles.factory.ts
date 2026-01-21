@@ -7,7 +7,7 @@ import {
 } from '@casl/ability';
 
 export type Actions = 'manage' | 'create' | 'read' | 'update' | 'delete';
-export type Subjects = 'User' | 'all';
+export type Subjects = 'User' | /* SUBJECT_INJECTOR */ 'all';
 
 export type AppAbility = PureAbility<any>;
 

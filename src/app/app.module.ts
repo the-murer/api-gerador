@@ -48,6 +48,7 @@ import { AiModule } from '@app/ai/ai.module';
     ActionTokensModule,
     AuthModule,
     EmailModule,
+    /* MODULES_INJECTOR */
   ],
   controllers: [AppController],
   providers: [
