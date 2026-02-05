@@ -15,6 +15,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from '@app/tasks/tasks.module';
 import { AiModule } from '@app/ai/ai.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({

@@ -5,6 +5,7 @@ import { User } from '../users.schema';
 import { FindUsersDto } from '../dto/find-users.dto';
 import { DefaultPaginationResponse } from '@app/app/dtos/default-pagination.dto';
 import { StorageService } from '@app/files/storage.service';
+import { buildFilter } from '@app/utils/database/base.repository';
 
 interface FindUsersHandlerInput extends FindUsersDto {}
 
@@ -26,17 +27,22 @@ export class FindUsersHandler
     limit,
     sort = 'createdAt',
     sortOrder,
+    name,
+    email,
   }: FindUsersHandlerInput) {
     const { items, metadata } = await this.usersRepository.findPaginated(
       page,
       limit,
       sort,
       sortOrder,
+      buildFilter({ name, email }),
     );
 
     for (const user of items) {
       if (user?.profilePictureUrl) {
-        const tempProfileUrl = await this.storageService.getFileUrl(user?.profilePictureUrl);
+        const tempProfileUrl = await this.storageService.getFileUrl(
+          user?.profilePictureUrl,
+        );
         user.profilePictureUrl = tempProfileUrl;
       }
     }

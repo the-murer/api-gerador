@@ -80,3 +80,25 @@ export class BaseRepository<T> {
     };
   }
 }
+
+export const buildFilter = (
+  filters: Record<string, string | number | boolean | undefined>,
+): FilterQuery<any> => {
+  const filter: FilterQuery<any> = {};
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (!value) continue;
+
+    if (typeof value === 'string') {
+      filter[key] = { $regex: value, $options: 'i' };
+    }
+    if (typeof value === 'number') {
+      filter[key] = { $eq: value };
+    }
+    if (typeof value === 'boolean') {
+      filter[key] = value;
+    }
+  }
+
+  return filter;
+};
