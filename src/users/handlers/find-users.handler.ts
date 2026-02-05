@@ -29,13 +29,14 @@ export class FindUsersHandler
     sortOrder,
     name,
     email,
+    active,
   }: FindUsersHandlerInput) {
     const { items, metadata } = await this.usersRepository.findPaginated(
       page,
       limit,
       sort,
       sortOrder,
-      buildFilter({ name, email }),
+      buildFilter({ name, email, active }),
     );
 
     for (const user of items) {

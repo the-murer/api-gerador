@@ -1,6 +1,6 @@
 import { DefaultPaginationDto } from '@app/app/dtos/default-pagination.dto';
 import { User } from '../users.schema';
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class FindUsersDto extends DefaultPaginationDto<User> {
   @IsOptional()
@@ -10,4 +10,8 @@ export class FindUsersDto extends DefaultPaginationDto<User> {
   @IsOptional()
   @IsString()
   email?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
 }

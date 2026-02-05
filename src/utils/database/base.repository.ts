@@ -87,7 +87,7 @@ export const buildFilter = (
   const filter: FilterQuery<any> = {};
 
   for (const [key, value] of Object.entries(filters)) {
-    if (!value) continue;
+    if (value === undefined || value === null) continue;
 
     if (typeof value === 'string') {
       filter[key] = { $regex: value, $options: 'i' };
@@ -100,5 +100,6 @@ export const buildFilter = (
     }
   }
 
+  console.log("🚀 ~ buildFilter ~ filter:", filter)
   return filter;
 };

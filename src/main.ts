@@ -1,13 +1,22 @@
 import { AppModule } from './app/app.module';
-import './app/trace/tracing'; // IMPORTANTE: importar ANTES de tudo
+import './app/trace/tracing'; // IMPORTANTE: importar AQUI
 import { NestFactory } from '@nestjs/core';
 
 import { LoggerService } from './app/trace/logger.service';
+import { AppValidationPipe } from './app/pipes/app-validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
+  app.useGlobalPipes(
+    new AppValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+      whitelist: true,
+    }),
+  );
 
   app.enableCors({ origin: true });
 
