@@ -92,14 +92,11 @@ export const buildFilter = (
     if (typeof value === 'string') {
       filter[key] = { $regex: value, $options: 'i' };
     }
-    if (typeof value === 'number') {
-      filter[key] = { $eq: value };
-    }
-    if (typeof value === 'boolean') {
-      filter[key] = value;
-    }
+
+    if (typeof value === 'number') filter[key] = { $eq: value };
+
+    if (typeof value === 'boolean') filter[key] = value;
   }
 
-  console.log("🚀 ~ buildFilter ~ filter:", filter)
   return filter;
 };
