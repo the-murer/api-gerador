@@ -15,7 +15,7 @@ export function defineAbility(user: User): AppAbility {
   const { can, cannot, build } = new AbilityBuilder<AppAbility>(Ability);
 
   const includeRole = (role: UserRoles) => {
-    return user.roles.some((r) => r === role);
+    return user.workspaces.some((workspace) => workspace.role === role);
   };
 
   if (includeRole(UserRoles.ADMIN)) {

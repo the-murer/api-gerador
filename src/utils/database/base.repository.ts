@@ -51,7 +51,7 @@ export class BaseRepository<T> {
   }
 
   async findById(_id: string): Promise<T | null> {
-    return this.model.findById(_id);
+    return this.model.findById(generateId(_id));
   }
 
   async findPaginated(

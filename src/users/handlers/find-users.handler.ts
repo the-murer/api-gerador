@@ -7,7 +7,9 @@ import { DefaultPaginationResponse } from '@app/app/dtos/default-pagination.dto'
 import { StorageService } from '@app/files/storage.service';
 import { buildFilter } from '@app/utils/database/base.repository';
 
-interface FindUsersHandlerInput extends FindUsersDto {}
+interface FindUsersHandlerInput extends FindUsersDto {
+  workspaceId: string;
+}
 
 type FindUsersHandlerOutput = DefaultPaginationResponse<User>;
 
@@ -23,6 +25,7 @@ export class FindUsersHandler
   ) {}
 
   public async execute({
+    workspaceId,
     page,
     limit,
     sort = 'createdAt',
@@ -31,13 +34,15 @@ export class FindUsersHandler
     email,
     active,
   }: FindUsersHandlerInput) {
-    const { items, metadata } = await this.usersRepository.findPaginated(
-      page,
-      limit,
-      sort,
-      sortOrder,
-      buildFilter({ name, email, active }),
-    );
+    const { items, metadata } =
+      await this.usersRepository.findPaginatedWithWorkspace(
+        page,
+        limit,
+        sort,
+        workspaceId,
+        sortOrder,
+        buildFilter({ name, email, active }),
+      );
 
     for (const user of items) {
       if (user?.profilePictureUrl) {

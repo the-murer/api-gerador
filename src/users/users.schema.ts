@@ -7,6 +7,17 @@ export enum UserRoles {
   USER = 'user',
 }
 
+export class UserWorkspace {
+  @Prop({ required: true })
+  workspaceId: string;
+
+  @Prop({ required: true })
+  workspaceName: string;
+
+  @Prop({ required: true })
+  role: UserRoles;
+}
+
 @Schema({ timestamps: true })
 export class User extends TimestampSchema {
   @Prop({ default: null, type: Boolean })
@@ -21,8 +32,8 @@ export class User extends TimestampSchema {
   @Prop({ required: false })
   profilePictureUrl?: string;
 
-  @Prop({ required: true, enum: UserRoles, type: [String] })
-  roles: UserRoles[];
+  @Prop({ required: true, type: [UserWorkspace] })
+  workspaces: UserWorkspace[];
 
   @Prop()
   password: string;

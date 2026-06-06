@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import {
   IsEnum,
@@ -14,7 +15,6 @@ enum Environment {
   Test = 'TEST',
   Homologation = 'HOMOLOGATION',
 }
-
 export class EnvironmentVariables {
   @IsEnum(Environment)
   NODE_ENV: Environment;
@@ -31,6 +31,9 @@ export class EnvironmentVariables {
   JWT_SECRET: string;
 
   @IsString()
+  SESSION_SECRET: string;
+
+  @IsString()
   AWS_REGION: string;
 
   @IsString()
@@ -41,7 +44,21 @@ export class EnvironmentVariables {
 
   @IsString()
   AWS_SECRET_ACCESS_KEY: string;
+
+  @IsString()
+  FRONTEND_URL: string;
+
+  @IsString()
+  TWILIO_ACCOUNT_SID: string;
+
+  @IsString()
+  TWILIO_AUTH_TOKEN: string;
+
+  @IsString()
+  TWILIO_PHONE_NUMBER: string;
 }
+
+export type EnvConfig = ConfigService<EnvironmentVariables, true>;
 
 export function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, {

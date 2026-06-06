@@ -21,6 +21,8 @@ import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
 import { Roles } from '@app/auth/roles/decorator';
 import { UpdateProfilePictureHandler } from './handlers/update-profile-picture.handler';
 import { UpdateProfilePictureDto } from './dto/update-profile-picture.dto';
+import { AuthUser } from '@app/utils/user-decorator';
+import type { SessionUser } from '@app/auth/session.types';
 
 @Controller('users')
 export class UsersController {
@@ -76,8 +78,11 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @Get()
   @Roles({ action: 'read', subject: 'User' })
-  async find(@Query() findDto: FindUsersDto) {
-    const result = await this.findHandler.execute(findDto);
+  async find(@Query() findDto: FindUsersDto, @AuthUser() user: SessionUser) {
+    const result = await this.findHandler.execute({
+      ...findDto,
+      workspaceId: user.workspaceId,
+    });
 
     return result;
   }

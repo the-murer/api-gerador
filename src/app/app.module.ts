@@ -11,10 +11,10 @@ import { validate, type EnvironmentVariables } from './env.validations';
 import { ActionTokensModule } from '@app/action-tokens/action-tokens.module';
 import { LoggingInterceptor } from './trace/loggin.interceptor';
 import { LoggerService } from './trace/logger.service';
-import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from '@app/tasks/tasks.module';
 import { AiModule } from '@app/ai/ai.module';
+import { WorkspacesModule } from '../workspaces/workspaces.module';
 
 @Module({
   imports: [
@@ -31,17 +31,6 @@ import { AiModule } from '@app/ai/ai.module';
       }),
       inject: [ConfigService],
     }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (
-        configService: ConfigService<EnvironmentVariables, true>,
-      ) => ({
-        secret: configService.get('JWT_SECRET', { infer: true }),
-        signOptions: { expiresIn: '7d' },
-        global: true,
-      }),
-      inject: [ConfigService],
-    }),
     ScheduleModule.forRoot(),
     UsersModule,
     TasksModule,
@@ -49,6 +38,7 @@ import { AiModule } from '@app/ai/ai.module';
     ActionTokensModule,
     AuthModule,
     EmailModule,
+    WorkspacesModule,
     /* MODULES_INJECTOR */
   ],
   controllers: [AppController],

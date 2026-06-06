@@ -14,13 +14,15 @@ import { UpdateUserHandler } from './handlers/update-user.handler';
 import { ChangeUserActiveHandler } from './handlers/change-user-active.handler';
 import { UpdateProfilePictureHandler } from './handlers/update-profile-picture.handler';
 import { FilesModule } from '@app/files/files.module';
+import { WorkspacesModule } from '@app/workspaces/workspaces.module';
 
 @Module({
   imports: [
     EmailModule,
     ActionTokensModule,
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     FilesModule,
+    WorkspacesModule,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UsersController],
   providers: [

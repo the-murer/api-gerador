@@ -1,13 +1,12 @@
+import { SessionUser } from '@app/auth/session.types';
 import { StorageService } from '@app/files/storage.service';
 import { UsersRepository } from '@app/users/users.repository';
 import { CommandHandler } from '@app/utils/command-handler';
 import {
-  Inject,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 
 type SignInHandlerInput = {
@@ -15,7 +14,7 @@ type SignInHandlerInput = {
   pass: string;
 };
 
-type SignInHandlerOutput = any;
+type SignInHandlerOutput = SessionUser;
 
 @Injectable()
 export class SignInHandler
@@ -25,7 +24,6 @@ export class SignInHandler
 
   constructor(
     private usersRepository: UsersRepository,
-    private jwtService: JwtService,
     private storageService: StorageService,
   ) {}
 
@@ -45,17 +43,16 @@ export class SignInHandler
       );
     }
 
-    const payload = {
-      sub: user._id.toString(),
+    const [defaultWorkspace] = user.workspaces;
+
+    return {
       _id: user._id.toString(),
       name: user.name,
       email,
       profilePictureUrl: user.profilePictureUrl,
-      roles: user.roles,
-    };
-
-    return {
-      access_token: await this.jwtService.signAsync(payload),
+      workspaceId: defaultWorkspace?.workspaceId,
+      workspaces: user.workspaces,
+      role: defaultWorkspace.role,
     };
   }
 }
